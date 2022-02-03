@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim
+FROM registry.access.redhat.com/ubi8/openjdk-11:latest
 
 ENV ZOO_CONF_DIR=/conf \
     ZOO_DATA_DIR=/data \
@@ -13,18 +13,21 @@ ENV ZOO_CONF_DIR=/conf \
     ZOO_STANDALONE_ENABLED=true \
     ZOO_ADMINSERVER_ENABLED=true
 
+
+
 # Add a user with an explicit UID/GID and create necessary directories
-RUN set -eux; \
-    groupadd -r zookeeper --gid=1000; \
-    useradd -r -g zookeeper --uid=1000 zookeeper; \
+RUN set -eux; \    
     mkdir -p "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"; \
-    chown zookeeper:zookeeper "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"
+    chgrp -R 0 "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"; \
+    chmod -R g+rwX "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"
+    
+
 
 # Install required packges
 RUN set -eux; \
-    apt-get -qq update; \
+    microdnf  -qq update; \
     DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y --no-install-recommends \
+    microdnf  install -y --no-install-recommends \
         ca-certificates \
         dirmngr \
         gosu \
