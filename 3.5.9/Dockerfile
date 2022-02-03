@@ -13,8 +13,6 @@ ENV ZOO_CONF_DIR=~/conf \
     ZOO_STANDALONE_ENABLED=true \
     ZOO_ADMINSERVER_ENABLED=true
 
-ENV GOSU_VERSION 1.11
-
 # Add a user with an explicit UID/GID and create necessary directories
 RUN set -eux; \    
     mkdir -p "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"; \
@@ -35,21 +33,17 @@ RUN set -eux; \
         wget; \
     rm -rf /var/lib/apt/lists/*; \
 
-# install gosu
-	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64"; \
-	wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64.asc"; \
-	export GNUPGHOME="$(mktemp -d)"; \
-        echo "disable-ipv6" >> ${GNUPGHOME}/dirmngr.conf; \
-        for server in $(shuf -e pgpkeys.mit.edu \
-            ha.pool.sks-keyservers.net \
-            hkp://p80.pool.sks-keyservers.net:80 \
-            pgp.mit.edu) ; do \
-        gpg --batch --keyserver $server --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && break || : ; \
-        done; \
-	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
-	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
-	chmod +x /usr/local/bin/gosu; \
-	gosu nobody true
+# Install gosu.  https://github.com/tianon/gosu
+ENV GOSU_VERSION=1.11
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64" \
+    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64.asc" \
+    && gpg --verify /usr/local/bin/gosu.asc \
+    && rm /usr/local/bin/gosu.asc \
+    && rm -r /root/.gnupg/ \
+    && chmod +x /usr/local/bin/gosu \
+    # Verify that the binary works
+    && gosu nobody true
 
 ARG GPG_KEY=3D296268A36FACA1B7EAF110792D43153B5B5147
 ARG SHORT_DISTRO_NAME=zookeeper-3.5.9
