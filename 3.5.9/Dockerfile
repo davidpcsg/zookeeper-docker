@@ -49,36 +49,13 @@ ARG SHORT_DISTRO_NAME=zookeeper-3.5.9
 ARG DISTRO_NAME=apache-zookeeper-3.5.9-bin
 
 # Download Apache Zookeeper, verify its PGP signature, untar and clean up
-RUN set -eux; \
-    ddist() { \
-        local f="$1"; shift; \
-        local distFile="$1"; shift; \
-        local success=; \
-        local distUrl=; \
-        for distUrl in \
-            'https://www.apache.org/dyn/closer.cgi?action=download&filename=' \
-            https://www-us.apache.org/dist/ \
-            https://www.apache.org/dist/ \
-            https://archive.apache.org/dist/ \
-        ; do \
-            if wget -q -O "$f" "$distUrl$distFile" && [ -s "$f" ]; then \
-                success=1; \
-                break; \
-            fi; \
-        done; \
-        [ -n "$success" ]; \
-    }; \
-    ddist "$DISTRO_NAME.tar.gz" "zookeeper/$SHORT_DISTRO_NAME/$DISTRO_NAME.tar.gz"; \
-    ddist "$DISTRO_NAME.tar.gz.asc" "zookeeper/$SHORT_DISTRO_NAME/$DISTRO_NAME.tar.gz.asc"; \
-    export GNUPGHOME="$(mktemp -d)"; \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-key "$GPG_KEY" || \
-    gpg --keyserver pgp.mit.edu --recv-keys "$GPG_KEY" || \
-    gpg --keyserver keyserver.pgp.com --recv-keys "$GPG_KEY"; \
-    gpg --batch --verify "$DISTRO_NAME.tar.gz.asc" "$DISTRO_NAME.tar.gz"; \
+RUN set -eux; \    
+    wget http://www.apache.org/dist/zookeeper/$SHORT_DISTRO_NAME/$DISTRO_NAME.tar.gz; \      
     tar -zxf "$DISTRO_NAME.tar.gz"; \
     mv "$DISTRO_NAME/conf/"* "$ZOO_CONF_DIR"; \
-    rm -rf "$GNUPGHOME" "$DISTRO_NAME.tar.gz" "$DISTRO_NAME.tar.gz.asc"; \
-    chown -R zookeeper:zookeeper "/$DISTRO_NAME"
+    rm -rf "$DISTRO_NAME.tar.gz"; \    
+    chgrp -R 0 "$DISTRO_NAME"; \
+    chmod -R g+rwX "$DISTRO_NAME"
 
 WORKDIR $DISTRO_NAME
 VOLUME ["$ZOO_DATA_DIR", "$ZOO_DATA_LOG_DIR", "$ZOO_LOG_DIR"]
