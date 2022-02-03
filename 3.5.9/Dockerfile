@@ -31,7 +31,7 @@ RUN set -eux; \
         ca-certificates \
         dirmngr \        
         gnupg \
-        netcat \
+        nmap \
         wget; \
     rm -rf /var/lib/apt/lists/*; \
 
