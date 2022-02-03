@@ -1,9 +1,11 @@
 FROM registry.access.redhat.com/ubi8/openjdk-11:latest
 
-ENV ZOO_CONF_DIR=~/conf \
-    ZOO_DATA_DIR=~/data \
-    ZOO_DATA_LOG_DIR=~/datalog \
-    ZOO_LOG_DIR=~/logs \
+USER root
+
+ENV ZOO_CONF_DIR=/conf \
+    ZOO_DATA_DIR=/data \
+    ZOO_DATA_LOG_DIR=/datalog \
+    ZOO_LOG_DIR=/logs \
     ZOO_TICK_TIME=2000 \
     ZOO_INIT_LIMIT=5 \
     ZOO_SYNC_LIMIT=2 \
@@ -18,8 +20,6 @@ RUN set -eux; \
     mkdir -p "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"; \
     chgrp -R 0 "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"; \
     chmod -R g+rwX "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"
-    
-USER root
 
 # Install required packges
 RUN set -eux; \
