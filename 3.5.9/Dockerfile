@@ -25,7 +25,7 @@ USER root
 
 # Install required packges
 RUN set -eux; \
-    microdnf  -qq update; \
+    microdnf  update; \
     DEBIAN_FRONTEND=noninteractive \
     microdnf  install -y --no-install-recommends \
         ca-certificates \
