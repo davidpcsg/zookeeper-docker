@@ -31,7 +31,8 @@ RUN set -eux; \
         gnupg \
         nmap \
         wget \
-        gzip; \
+        gzip \
+        net-tools; \
     rm -rf /var/lib/apt/lists/*;
 
 # Install gosu.  https://github.com/tianon/gosu
