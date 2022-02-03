@@ -31,7 +31,7 @@ RUN set -eux; \
         gnupg \
         nmap \
         wget; \
-    rm -rf /var/lib/apt/lists/*; \
+    rm -rf /var/lib/apt/lists/*;
 
 # Install gosu.  https://github.com/tianon/gosu
 ENV GOSU_VERSION=1.11
