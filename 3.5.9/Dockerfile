@@ -21,7 +21,7 @@ RUN set -eux; \
     chgrp -R 0 "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"; \
     chmod -R g+rwX "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR"
     
-
+USER root
 
 # Install required packges
 RUN set -eux; \
