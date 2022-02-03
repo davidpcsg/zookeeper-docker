@@ -29,14 +29,11 @@ RUN set -eux; \
     DEBIAN_FRONTEND=noninteractive \
     microdnf  install -y \
         ca-certificates \
-        dirmngr \
-        gosu \
+        dirmngr \        
         gnupg \
         netcat \
         wget; \
     rm -rf /var/lib/apt/lists/*; \
-# Verify that gosu binary works
-    gosu nobody true
 
 # install gosu
 	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64"; \
