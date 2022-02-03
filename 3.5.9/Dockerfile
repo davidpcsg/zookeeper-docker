@@ -27,7 +27,7 @@ USER root
 RUN set -eux; \
     microdnf  update; \
     DEBIAN_FRONTEND=noninteractive \
-    microdnf  install -y --no-install-recommends \
+    microdnf  install -y \
         ca-certificates \
         dirmngr \
         gosu \
