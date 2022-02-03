@@ -32,7 +32,7 @@ RUN set -eux; \
         nmap \
         wget \
         gzip \
-        net-tools; \
+        hostname; \
     rm -rf /var/lib/apt/lists/*;
 
 # Install gosu.  https://github.com/tianon/gosu
